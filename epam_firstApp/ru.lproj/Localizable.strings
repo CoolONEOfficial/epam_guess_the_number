@@ -1,0 +1,16 @@
+/* 
+  Localizable.strings
+  epam_firstApp
+
+  Created by Nickolay Truhin on 28.01.2020.
+  Copyright © 2020 Nickolay Truhin. All rights reserved.
+*/
+
+"settings" = "Настройки";
+"statistics" = "Статистика";
+"tooSmall" = "Слишком мало";
+"tooMuch" = "Слишком много";
+"win" = "Ты выйграл используя %d попыток(-ки). Игра перезапущена.";
+"enterNumber" = "Введите номер (%d-%d)";
+"setSettings" = "Установите настройки чтобы играть";
+"attemptButton" = "Попытка %d";

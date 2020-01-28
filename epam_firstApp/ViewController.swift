@@ -16,32 +16,37 @@ class ViewController: UIViewController, SettingsViewControllerDelegate {
         titleLabel.numberOfLines = 0
         
         attemptButton.isEnabled = false
-        randomMax = UInt(UserDefaults.standard.integer(forKey: ViewController.randomMaxKey))
-        randomMin = UInt(UserDefaults.standard.integer(forKey: ViewController.randomMinKey))
-        gamesCount = UInt(UserDefaults.standard.integer(forKey: ViewController.gamesCountKey))
-        
-        attemptButton.setTitle(
-            "Attempt \(attemptsCount + 1)",
-            for: .normal
-        )
+        let userDefs = UserDefaults.standard
+        if userDefs.object(forKey: ViewController.randomMaxKey) != nil &&
+            userDefs.object(forKey: ViewController.randomMinKey) != nil {
+            randomMax = UInt(userDefs.integer(forKey: ViewController.randomMaxKey))
+            randomMin = UInt(userDefs.integer(forKey: ViewController.randomMinKey))
+        }
+        gamesCount = UInt(userDefs.integer(forKey: ViewController.gamesCountKey))
+        attemptsCount = 0
     }
 
     @IBAction func onAttemptClicked(_ sender: Any) {
-        let inputNumber = Int(numberTextField.text!)!
+        let inputNumber = Int(numberTextField.text!)
         
-        var labelStr: String
-        if inputNumber > randomNumber! {
-            labelStr = "Too much"
-            attemptsCount += 1
-        } else if inputNumber < randomNumber! {
-            labelStr = "Too small"
-            attemptsCount += 1
-        } else {
-            labelStr = "You win using \(attemptsCount + 1) \(attemptsCount > 0 ? "attempts" : "attempt"). Random number regenerated."
-            restartGame()
+        if inputNumber != nil {
+            var labelStr: String
+            if inputNumber! > randomNumber! {
+                labelStr = NSLocalizedString("tooMuch", comment: "")
+                attemptsCount += 1
+            } else if inputNumber! < randomNumber! {
+                labelStr = NSLocalizedString("tooSmall", comment: "")
+                attemptsCount += 1
+            } else {
+                labelStr = String.localizedStringWithFormat(
+                    NSLocalizedString("win", comment: ""),
+                    attemptsCount + 1
+                )
+                restartGame()
+            }
+            
+            titleLabel.text = labelStr
         }
-        
-        titleLabel.text = labelStr
     }
     
     var randomNumber: UInt?
@@ -50,7 +55,10 @@ class ViewController: UIViewController, SettingsViewControllerDelegate {
     var attemptsCount: UInt {
         set(newValue) {
             attemptButton.setTitle(
-                "Attempt \(newValue + 1)",
+                String.localizedStringWithFormat(
+                    NSLocalizedString("attemptButton", comment: ""),
+                    newValue + 1
+                ),
                 for: .normal
             )
             _attemptsCount = newValue
@@ -101,11 +109,15 @@ class ViewController: UIViewController, SettingsViewControllerDelegate {
     
     func onRangeChanged() {
         if randomMin != nil && randomMax != nil {
-            titleLabel.text = "Enter number (\(randomMin!)-\(randomMax!))"
+            titleLabel.text = String.localizedStringWithFormat(
+                NSLocalizedString("enterNumber", comment: ""),
+                randomMin!,
+                randomMax!
+            )
             attemptButton.isEnabled = true
             restartGame()
         } else {
-            titleLabel.text = "Enter settings to start game"
+            titleLabel.text = NSLocalizedString("setSettings", comment: "")
             attemptButton.isEnabled = false
         }
     }
