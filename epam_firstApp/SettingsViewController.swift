@@ -14,36 +14,36 @@ protocol SettingsViewControllerDelegate: class {
 }
 
 class SettingsViewController: UIViewController {
-
+    
+    @IBOutlet var randomMinField: UITextField!
+    @IBOutlet var randomMaxField: UITextField!
+    
     weak var delegate: SettingsViewControllerDelegate?
     var defaultRandomMax, defaultRandomMin: UInt?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if defaultRandomMin != nil {
-            randomMinField.text = String(defaultRandomMin!)
+        if let randomMinText = defaultRandomMin {
+            randomMinField.text = String(randomMinText)
         }
-        if defaultRandomMax != nil {
-            randomMaxField.text = String(defaultRandomMax!)
+        if let randomMaxText = defaultRandomMax {
+            randomMaxField.text = String(randomMaxText)
         }
         // Do any additional setup after loading the view.
     }
     
     @IBAction func onRandomMinChanged(_ sender: UITextField) {
-        if(sender.text != nil && !sender.text!.isEmpty) {
-            delegate?.updateRandomMin(newValue: UInt(sender.text!) ?? 0)
+        if let fieldText = sender.text, !fieldText.isEmpty {
+            delegate?.updateRandomMin(newValue: UInt(fieldText) ?? 0)
         }
     }
     
     @IBAction func onRandomMaxChanged(_ sender: UITextField) {
-        if(sender.text != nil && !sender.text!.isEmpty) {
-            delegate?.updateRandomMax(newValue: UInt(sender.text!) ?? 0)
+        if let fieldText = sender.text, !fieldText.isEmpty {
+            delegate?.updateRandomMax(newValue: UInt(fieldText) ?? 0)
         }
     }
-    
-    @IBOutlet var randomMinField: UITextField!
-    @IBOutlet var randomMaxField: UITextField!
     
     /*
     // MARK: - Navigation

@@ -10,6 +10,10 @@ import UIKit
 
 class StatisticsViewController: UIViewController {
 
+    @IBOutlet var gamesCountLabel: UILabel!
+    
+    var gamesCount: UInt?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -17,10 +21,6 @@ class StatisticsViewController: UIViewController {
         
         // Do any additional setup after loading the view.
     }
-    
-    var gamesCount: UInt?
-    
-    @IBOutlet var gamesCountLabel: UILabel!
     
     /*
     // MARK: - Navigation

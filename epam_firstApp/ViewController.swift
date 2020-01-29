@@ -9,45 +9,9 @@
 import UIKit
 
 class ViewController: UIViewController, SettingsViewControllerDelegate {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Wrap lines prefs
-        titleLabel.contentMode = .scaleToFill
-        titleLabel.numberOfLines = 0
-        
-        attemptButton.isEnabled = false
-        let userDefs = UserDefaults.standard
-        if userDefs.object(forKey: ViewController.randomMaxKey) != nil &&
-            userDefs.object(forKey: ViewController.randomMinKey) != nil {
-            randomMax = UInt(userDefs.integer(forKey: ViewController.randomMaxKey))
-            randomMin = UInt(userDefs.integer(forKey: ViewController.randomMinKey))
-        }
-        gamesCount = UInt(userDefs.integer(forKey: ViewController.gamesCountKey))
-        attemptsCount = 0
-    }
-
-    @IBAction func onAttemptClicked(_ sender: Any) {
-        let inputNumber = Int(numberTextField.text!)
-        
-        if inputNumber != nil {
-            var labelStr: String
-            if inputNumber! > randomNumber! {
-                labelStr = NSLocalizedString("tooMuch", comment: "")
-                attemptsCount += 1
-            } else if inputNumber! < randomNumber! {
-                labelStr = NSLocalizedString("tooSmall", comment: "")
-                attemptsCount += 1
-            } else {
-                labelStr = String.localizedStringWithFormat(
-                    NSLocalizedString("win", comment: ""),
-                    attemptsCount + 1
-                )
-                restartGame()
-            }
-            
-            titleLabel.text = labelStr
-        }
-    }
+    @IBOutlet var numberTextField: UITextField!
+    @IBOutlet var attemptButton: UIButton!
+    @IBOutlet var titleLabel: UILabel!
     
     var randomNumber: UInt?
     
@@ -82,10 +46,8 @@ class ViewController: UIViewController, SettingsViewControllerDelegate {
         }
     }
     
-    static let randomMaxKey = "randMax",
-                randomMinKey = "randMin"
-    private var _randomMax: UInt?,
-                _randomMin: UInt?
+    static let randomMaxKey = "randMax"
+    private var _randomMax: UInt?
     var randomMax: UInt? {
         get {
             return _randomMax
@@ -96,6 +58,9 @@ class ViewController: UIViewController, SettingsViewControllerDelegate {
             onRangeChanged()
         }
     }
+    
+    static let randomMinKey = "randMin"
+    private var _randomMin: UInt?
     var randomMin: UInt? {
         get {
             return _randomMin
@@ -104,6 +69,62 @@ class ViewController: UIViewController, SettingsViewControllerDelegate {
             _randomMin = newValue
             UserDefaults.standard.set(newValue, forKey: ViewController.randomMinKey)
             onRangeChanged()
+        }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Wrap lines prefs
+        titleLabel.contentMode = .scaleToFill
+        titleLabel.numberOfLines = 0
+        
+        attemptButton.isEnabled = false
+        let userDefs = UserDefaults.standard
+        if let defRandomMax = userDefs.object(forKey: ViewController.randomMaxKey),
+            let defRandomMin = userDefs.object(forKey: ViewController.randomMinKey),
+            defRandomMax is Int,
+            defRandomMin is Int {
+            randomMax = UInt(defRandomMax as! Int)
+            randomMin = UInt(defRandomMin as! Int)
+        }
+        gamesCount = UInt(userDefs.integer(forKey: ViewController.gamesCountKey))
+        attemptsCount = 0
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        switch segue.identifier {
+        case "settingsSegue":
+            let controller =  segue.destination as! SettingsViewController
+            controller.defaultRandomMax = randomMax
+            controller.defaultRandomMin = randomMin
+            controller.delegate = self
+        case "statisticsSegue":
+            let controller =  segue.destination as! StatisticsViewController
+            controller.gamesCount = gamesCount
+        default: break
+        }
+    }
+
+    @IBAction func onAttemptClicked(_ sender: Any) {
+        let inputNumber = Int(numberTextField.text!)
+        
+        if let validInputNumber = inputNumber {
+            var labelStr: String
+            if validInputNumber > randomNumber! {
+                labelStr = NSLocalizedString("tooMuch", comment: "")
+                attemptsCount += 1
+            } else if inputNumber! < randomNumber! {
+                labelStr = NSLocalizedString("tooSmall", comment: "")
+                attemptsCount += 1
+            } else {
+                labelStr = String.localizedStringWithFormat(
+                    NSLocalizedString("win", comment: ""),
+                    attemptsCount + 1
+                )
+                restartGame()
+            }
+            
+            titleLabel.text = labelStr
         }
     }
     
@@ -122,20 +143,6 @@ class ViewController: UIViewController, SettingsViewControllerDelegate {
         }
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        switch segue.identifier {
-        case "settingsSegue":
-            let controller =  segue.destination as! SettingsViewController
-            controller.defaultRandomMax = randomMax
-            controller.defaultRandomMin = randomMin
-            controller.delegate = self
-        case "statisticsSegue":
-            let controller =  segue.destination as! StatisticsViewController
-            controller.gamesCount = gamesCount
-        default: break
-        }
-    }
-    
     func updateRandomMax(newValue: UInt) {
         randomMax = newValue
     }
@@ -151,9 +158,5 @@ class ViewController: UIViewController, SettingsViewControllerDelegate {
             gamesCount! += 1
         }
     }
-    
-    @IBOutlet var numberTextField: UITextField!
-    @IBOutlet var attemptButton: UIButton!
-    @IBOutlet var titleLabel: UILabel!
 }
 
