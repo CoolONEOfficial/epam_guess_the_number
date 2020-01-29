@@ -9,8 +9,8 @@
 import UIKit
 
 protocol SettingsViewControllerDelegate: class {
-    func updateRandomMax(newValue: UInt)
-    func updateRandomMin(newValue: UInt)
+    func onUpdateRandomMax(newValue: UInt)
+    func onUpdateRandomMin(newValue: UInt)
 }
 
 class SettingsViewController: UIViewController {
@@ -35,13 +35,13 @@ class SettingsViewController: UIViewController {
     
     @IBAction func onRandomMinChanged(_ sender: UITextField) {
         if let fieldText = sender.text, !fieldText.isEmpty {
-            delegate?.updateRandomMin(newValue: UInt(fieldText) ?? 0)
+            delegate?.onUpdateRandomMin(newValue: UInt(fieldText) ?? 0)
         }
     }
     
     @IBAction func onRandomMaxChanged(_ sender: UITextField) {
         if let fieldText = sender.text, !fieldText.isEmpty {
-            delegate?.updateRandomMax(newValue: UInt(fieldText) ?? 0)
+            delegate?.onUpdateRandomMax(newValue: UInt(fieldText) ?? 0)
         }
     }
     

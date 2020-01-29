@@ -34,8 +34,12 @@ class ViewController: UIViewController, SettingsViewControllerDelegate {
     }
     
     static let gamesCountKey = "gamesCount"
-    private var _gamesCount: UInt?
-    var gamesCount: UInt? {
+    private var _gamesCount: UInt = UInt(
+        UserDefaults.standard.integer(
+            forKey: ViewController.gamesCountKey
+        )
+    )
+    var gamesCount: UInt {
         get {
             return _gamesCount
         }
@@ -80,40 +84,39 @@ class ViewController: UIViewController, SettingsViewControllerDelegate {
         
         attemptButton.isEnabled = false
         let userDefs = UserDefaults.standard
-        if let defRandomMax = userDefs.object(forKey: ViewController.randomMaxKey),
-            let defRandomMin = userDefs.object(forKey: ViewController.randomMinKey),
-            defRandomMax is Int,
-            defRandomMin is Int {
-            randomMax = UInt(defRandomMax as! Int)
-            randomMin = UInt(defRandomMin as! Int)
+        if let defRandomMax = userDefs.object(forKey: ViewController.randomMaxKey) as? Int,
+            let defRandomMin = userDefs.object(forKey: ViewController.randomMinKey) as? Int {
+            randomMax = UInt(defRandomMax)
+            randomMin = UInt(defRandomMin)
         }
-        gamesCount = UInt(userDefs.integer(forKey: ViewController.gamesCountKey))
         attemptsCount = 0
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.identifier {
         case "settingsSegue":
-            let controller =  segue.destination as! SettingsViewController
-            controller.defaultRandomMax = randomMax
-            controller.defaultRandomMin = randomMin
-            controller.delegate = self
+            if let controller = segue.destination as? SettingsViewController {
+                controller.defaultRandomMax = randomMax
+                controller.defaultRandomMin = randomMin
+                controller.delegate = self
+            }
         case "statisticsSegue":
-            let controller =  segue.destination as! StatisticsViewController
-            controller.gamesCount = gamesCount
+            if let controller = segue.destination as? StatisticsViewController {
+                controller.gamesCount = gamesCount
+            }
         default: break
         }
     }
 
     @IBAction func onAttemptClicked(_ sender: Any) {
-        let inputNumber = Int(numberTextField.text!)
-        
-        if let validInputNumber = inputNumber {
+        if let validInputNumberStr = numberTextField.text,
+            let validInputNumber = Int(validInputNumberStr),
+            let validRandomNumber = randomNumber {
             var labelStr: String
-            if validInputNumber > randomNumber! {
+            if validInputNumber > validRandomNumber {
                 labelStr = NSLocalizedString("tooMuch", comment: "")
                 attemptsCount += 1
-            } else if inputNumber! < randomNumber! {
+            } else if validInputNumber < validRandomNumber {
                 labelStr = NSLocalizedString("tooSmall", comment: "")
                 attemptsCount += 1
             } else {
@@ -121,7 +124,7 @@ class ViewController: UIViewController, SettingsViewControllerDelegate {
                     NSLocalizedString("win", comment: ""),
                     attemptsCount + 1
                 )
-                restartGame()
+                restartGame(gameComplete: true)
             }
             
             titleLabel.text = labelStr
@@ -129,11 +132,12 @@ class ViewController: UIViewController, SettingsViewControllerDelegate {
     }
     
     func onRangeChanged() {
-        if randomMin != nil && randomMax != nil {
+        if let validRandomMin = randomMin,
+            let validRandomMax = randomMax {
             titleLabel.text = String.localizedStringWithFormat(
                 NSLocalizedString("enterNumber", comment: ""),
-                randomMin!,
-                randomMax!
+                validRandomMin,
+                validRandomMax
             )
             attemptButton.isEnabled = true
             restartGame()
@@ -143,19 +147,22 @@ class ViewController: UIViewController, SettingsViewControllerDelegate {
         }
     }
     
-    func updateRandomMax(newValue: UInt) {
+    func onUpdateRandomMax(newValue: UInt) {
         randomMax = newValue
     }
     
-    func updateRandomMin(newValue: UInt) {
+    func onUpdateRandomMin(newValue: UInt) {
         randomMin = newValue
     }
     
-    func restartGame() {
-        randomNumber = UInt.random(in: randomMin!...randomMax!)
+    func restartGame(gameComplete: Bool = false) {
+        if let validRandomMin = randomMin,
+            let validRandomMax = randomMax {
+            randomNumber = UInt.random(in: validRandomMin...validRandomMax)
+        }
         attemptsCount = 0
-        if gamesCount != nil {
-            gamesCount! += 1
+        if gameComplete {
+            gamesCount += 1
         }
     }
 }
