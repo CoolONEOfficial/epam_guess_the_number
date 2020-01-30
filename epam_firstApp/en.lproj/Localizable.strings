@@ -11,6 +11,6 @@
 "tooSmall" = "Too small";
 "tooMuch" = "Too much";
 "win" = "You win using %d attempts. Game restarted.";
-"enterNumber" = "Enter number (%d-%d)";
+"enterNumber" = "Enter number";
 "setSettings" = "Set settings for play";
 "attemptButton" = "Attempt %d";

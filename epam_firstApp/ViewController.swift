@@ -17,6 +17,10 @@ class ViewController: UIViewController, SettingsViewControllerDelegate {
     
     private var _attemptsCount: UInt = 0
     var attemptsCount: UInt {
+        get {
+            return _attemptsCount
+        }
+        
         set(newValue) {
             attemptButton.setTitle(
                 String.localizedStringWithFormat(
@@ -27,9 +31,36 @@ class ViewController: UIViewController, SettingsViewControllerDelegate {
             )
             _attemptsCount = newValue
         }
-        
+    }
+    
+    static let averageAttemptsKey = "averageAttempts"
+    private var _averageAttempts: Float =
+        UserDefaults.standard.float(forKey: ViewController.averageAttemptsKey)
+    var averageAttempts: Float {
         get {
-            return _attemptsCount
+            return _averageAttempts
+        }
+        
+        set(newValue) {
+            _averageAttempts = newValue
+            UserDefaults.standard.set(newValue, forKey: ViewController.averageAttemptsKey)
+        }
+    }
+    
+    static let totalAttemptsCountKey = "totalAttemptsCount"
+    private var _totalAttemptsCount: UInt = UInt(
+           UserDefaults.standard.integer(
+               forKey: ViewController.totalAttemptsCountKey
+           )
+       )
+    var totalAttemptsCount: UInt {
+        get {
+            return _totalAttemptsCount
+        }
+        
+        set(newValue) {
+            _totalAttemptsCount = newValue
+            UserDefaults.standard.set(newValue, forKey: ViewController.totalAttemptsCountKey)
         }
     }
     
@@ -103,6 +134,8 @@ class ViewController: UIViewController, SettingsViewControllerDelegate {
         case "statisticsSegue":
             if let controller = segue.destination as? StatisticsViewController {
                 controller.gamesCount = gamesCount
+                controller.totalAttemptsCount = totalAttemptsCount
+                controller.averageAttempts = averageAttempts
             }
         default: break
         }
@@ -113,16 +146,19 @@ class ViewController: UIViewController, SettingsViewControllerDelegate {
             let validInputNumber = Int(validInputNumberStr),
             let validRandomNumber = randomNumber {
             var labelStr: String
+            
+            attemptsCount += 1
+            totalAttemptsCount += 1
+            
             if validInputNumber > validRandomNumber {
                 labelStr = NSLocalizedString("tooMuch", comment: "")
-                attemptsCount += 1
             } else if validInputNumber < validRandomNumber {
                 labelStr = NSLocalizedString("tooSmall", comment: "")
-                attemptsCount += 1
+                
             } else {
                 labelStr = String.localizedStringWithFormat(
                     NSLocalizedString("win", comment: ""),
-                    attemptsCount + 1
+                    attemptsCount
                 )
                 restartGame(gameComplete: true)
             }
@@ -139,6 +175,7 @@ class ViewController: UIViewController, SettingsViewControllerDelegate {
                 validRandomMin,
                 validRandomMax
             )
+            numberTextField.placeholder = "\(validRandomMin)-\(validRandomMax)"
             attemptButton.isEnabled = true
             restartGame()
         } else {
@@ -160,10 +197,13 @@ class ViewController: UIViewController, SettingsViewControllerDelegate {
             let validRandomMax = randomMax {
             randomNumber = UInt.random(in: validRandomMin...validRandomMax)
         }
-        attemptsCount = 0
         if gameComplete {
             gamesCount += 1
+            averageAttempts = averageAttempts > 0
+                ? (averageAttempts + Float(attemptsCount)) / 2
+                : Float(attemptsCount)
         }
+        attemptsCount = 0
     }
 }
 

@@ -9,15 +9,28 @@
 import UIKit
 
 class StatisticsViewController: UIViewController {
-
     @IBOutlet var gamesCountLabel: UILabel!
+    @IBOutlet var attemptsCountLabel: UILabel!
+    @IBOutlet var averageAttemptsLabel: UILabel!
     
     var gamesCount: UInt?
+    var totalAttemptsCount: UInt?
+    var averageAttempts: Float?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        gamesCountLabel.text = String(gamesCount ?? 0)
+        if let validGamesCount = gamesCount {
+            gamesCountLabel.text = String(validGamesCount)
+        }
+        
+        if let validTotalAttemptsCount = totalAttemptsCount {
+            attemptsCountLabel.text = String(validTotalAttemptsCount)
+        }
+        
+        if let validAverageAttempts = averageAttempts {
+            averageAttemptsLabel.text = String(validAverageAttempts)
+        }
         
         // Do any additional setup after loading the view.
     }
