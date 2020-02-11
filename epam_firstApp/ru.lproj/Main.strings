@@ -1,0 +1,42 @@
+
+/* Class = "UILabel"; text = "Min:"; ObjectID = "55L-ij-pzG"; */
+"55L-ij-pzG.text" = "От:";
+
+/* Class = "UIButton"; normalTitle = "Attempt 1"; ObjectID = "ARU-Ex-CcW"; */
+"ARU-Ex-CcW.normalTitle" = "Попытка 1";
+
+/* Class = "UILabel"; text = "Average attempts:"; ObjectID = "BAH-1W-oI2"; */
+"BAH-1W-oI2.text" = "В среднем попыток за игру:";
+
+/* Class = "UIButton"; normalTitle = "Statistics"; ObjectID = "K9M-xA-sRA"; */
+"K9M-xA-sRA.normalTitle" = "Статистика";
+
+/* Class = "UIButton"; normalTitle = "Settings"; ObjectID = "McL-kC-WqE"; */
+"McL-kC-WqE.normalTitle" = "Настройки";
+
+/* Class = "UILabel"; text = "Range of random number"; ObjectID = "PA2-0H-aOG"; */
+"PA2-0H-aOG.text" = "Диапазон случайного числа";
+
+/* Class = "UILabel"; text = "Attempts count:"; ObjectID = "QqN-o6-mm0"; */
+"QqN-o6-mm0.text" = "Количество попыток:";
+
+/* Class = "UILabel"; text = "Settings"; ObjectID = "R1r-1f-ZD5"; */
+"R1r-1f-ZD5.text" = "Настройки";
+
+/* Class = "UILabel"; text = "Max:"; ObjectID = "kfx-ov-Neq"; */
+"kfx-ov-Neq.text" = "До:";
+
+/* Class = "UILabel"; text = "Statistics"; ObjectID = "mow-Os-YMT"; */
+"mow-Os-YMT.text" = "Статистика";
+
+/* Class = "UILabel"; text = "..."; ObjectID = "oJF-ls-wcf"; */
+"oJF-ls-wcf.text" = "...";
+
+/* Class = "UILabel"; text = "..."; ObjectID = "skV-SN-ukY"; */
+"skV-SN-ukY.text" = "...";
+
+/* Class = "UILabel"; text = "..."; ObjectID = "stt-5u-TP0"; */
+"stt-5u-TP0.text" = "...";
+
+/* Class = "UILabel"; text = "Games count:"; ObjectID = "vrw-xY-2Vp"; */
+"vrw-xY-2Vp.text" = "Количество игр:";
